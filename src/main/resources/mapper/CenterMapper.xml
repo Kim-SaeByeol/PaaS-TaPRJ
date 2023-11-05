@@ -1,0 +1,48 @@
+<!-- resources/mapper/ICenterMapper.xml -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kopo.poly.mapper.ICenterMapper">
+
+    <!-- 센터의 전체 리스트 조회 -->
+<!--           WHERE region = #{selectedRegion}; 절을 통해
+               관리자가 지역을 선택하였을 경우 해당 지역만 조회하게 됨.
+
+               (@row_number:=@row_number + 1) AS seq
+               해당 절은 ROW_NUMBER() 함수를 MySQL 에 맞게 바꾼 것임.
+               이 경우, 지역을 선택하여 조회할 때 마다 SEQ가 새로 등록됨.
+ -->
+    <select id="getCenterList" resultType="CenterDTO">
+    SELECT
+        (@row_number:=@row_number + 1) AS seq,
+          center.*
+    FROM
+         center,
+         (SELECT @row_number:=0) AS t
+    WHERE
+         region = #{selectedRegion}
+    ORDER BY
+         address;
+    </select>
+
+    <!-- 센터 정보 추가 -->
+<!--    관리자는 센터에 대한 정보를 지역, 센터명, 주소, 담당연락처 만 등록할 수 있음-->
+    <insert id="insertCenterInfo" parameterType="kopo.poly.dto.CenterDTO">
+        INSERT INTO center (region, center_name, address, contact)
+        VALUES (#{region}, #{centerName}, #{address}, #{contact});
+    </insert>
+
+    <!-- 센터 리스트의 정보 수정 -->
+    <update id="updateCenterList" parameterType="kopo.poly.dto.CenterDTO">
+        UPDATE center
+        SET region = #{region}, center_name = #{centerName}, address = #{address}, contact = #{contact}
+        WHERE seq = #{seq};
+    </update>
+
+    <!-- 센터 리스트의 정보 삭제 -->
+    <delete id="deleteCenterList" parameterType="kopo.poly.dto.CenterDTO">
+        DELETE FROM center WHERE seq = #{seq};
+    </delete>
+
+</mapper>

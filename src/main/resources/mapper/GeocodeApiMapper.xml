@@ -1,0 +1,15 @@
+<!-- resources/mapper/GeocodeApiMapper.xml -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kopo.poly.mapper.IGeocodeAPIMapper">
+
+    <!-- Geocode 정보 업데이트 -->
+    <update id="updateGeocodeInfo" parameterType="kopo.poly.dto.CenterDTO">
+        UPDATE center
+        SET xAdress = #{xAdress}, yAdress = #{yAdress}
+        WHERE seq = #{seq};
+    </update>
+
+</mapper>
